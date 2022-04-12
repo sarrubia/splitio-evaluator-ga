@@ -41,7 +41,7 @@ try {
         if (Object.hasOwnProperty.call(result, splitName)) {
             const treatment = result[splitName];
             // Export env var
-            core.exportVariable(splitName, result);
+            core.exportVariable(splitName, treatment);
         }
     }
 
