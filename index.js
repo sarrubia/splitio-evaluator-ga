@@ -6,9 +6,13 @@ const SplitFactory = require('@splitsoftware/splitio').SplitFactory;
 try {
   // `who-to-greet` input defined in action metadata file
   const apiKey = core.getInput('api-key');
+  core.info("api-key" + apiKey.substring(0, 5));
+
   const key = core.getInput('key');
+  core.info("key" + key);
+
   const splitName = core.getInput('split');
-  //console.log(`Hello ${nameToGreet}!`);
+  console.log(splitName);
 
   
   var factory = SplitFactory({
@@ -26,6 +30,9 @@ try {
     core.setOutput("result", JSON.stringify({splitName:treatment}));
 
   });
+
+  client.destroy();
+  client = null;
 
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2)
