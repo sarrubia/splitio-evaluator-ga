@@ -1,4 +1,5 @@
 name: 'Split Evaluator'
+author: 'Sebastian Arrubia (sarrubia)'
 description: 'Evaluates Splits and set evaluations as output'
 inputs:
   api-key:  # Split api key
@@ -19,3 +20,6 @@ outputs:
 runs:
   using: 'node12'
   main: 'index.js'
+branding:
+  icon: 'git-merge'  
+  color: 'blue'
