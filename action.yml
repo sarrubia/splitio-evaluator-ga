@@ -9,8 +9,8 @@ inputs:
     description: 'Evaluation key'
     required: true
     default: ''
-  split:
-    description: 'Split to be evaluated'
+  splits:
+    description: 'Splits to be evaluated'
     required: true
     default: ''
 outputs:

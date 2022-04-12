@@ -1,5 +1,4 @@
 const core = require('@actions/core');
-const github = require('@actions/github');
 const SplitFactory = require('@splitsoftware/splitio').SplitFactory;
 
 
@@ -20,9 +19,11 @@ try {
   checkInputParam(key, "User/Evaluation key is required")
   core.debug("key: " + key);
 
-  const splitName = core.getInput('split');
-  checkInputParam(splitName, "Split name is required")
-  core.debug("Split: " + splitName);
+  const splitList = core.getInput('splits');
+  checkInputParam(splitList, "Splits are required")
+  core.debug("Splits: " + splitList);
+
+  const splits = JSON.parse(splitList)
 
   
   var factory = SplitFactory({
@@ -33,15 +34,19 @@ try {
   var client = factory.client();
 
   client.on(client.Event.SDK_READY, function() {
-    // The key here represents the ID of the user/account/etc you're trying to evaluate a treatment for
-    var treatment = client.getTreatment(key, splitName);
-    core.debug("Treatment: " + treatment)
+    
+    var result = client.getTreatments(key, splits)
 
-    // Export env var
-    core.exportVariable(splitName, treatment);
+    for (const splitName in result) {
+        if (Object.hasOwnProperty.call(result, splitName)) {
+            const treatment = result[splitName];
+            // Export env var
+            core.exportVariable(splitName, result);
+        }
+    }
 
     // Set the step output
-    core.setOutput("result", JSON.stringify({splitName:treatment}));
+    core.setOutput("result", JSON.stringify(result));
 
     client.destroy();
     client = null;
