@@ -13,7 +13,7 @@ try {
   // `who-to-greet` input defined in action metadata file
   const apiKey = core.getInput('api-key');
   checkInputParam(apiKey, "API Key is required")
-  core.debug("api-key: " + apiKey.substring(0, 5));
+  core.debug("api-key: " + apiKey.substring(0, 5) + "...");
 
   const key = core.getInput('key');
   checkInputParam(key, "User/Evaluation key is required")
