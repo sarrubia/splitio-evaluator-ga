@@ -1,0 +1,21 @@
+name: 'Split Evaluator'
+description: 'Evaluates Splits and set evaluations as output'
+inputs:
+  api-key:  # Split api key
+    description: 'Split API key'
+    required: true
+    default: ''
+  key:  # user/evaluation key
+    description: 'Evaluation key'
+    required: true
+    default: ''
+  split:
+    description: 'Split to be evaluated'
+    required: true
+    default: ''
+outputs:
+  result: 
+    description: 'Evaluation results represented as JSON'
+runs:
+  using: 'node12'
+  main: 'index.js'
