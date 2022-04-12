@@ -19,11 +19,6 @@ try {
   checkInputParam(key, "User/Evaluation key is required")
   core.debug("key: " + key);
 
-  /*const splitList = core.getInput('splits');
-  checkInputParam(splitList, "Splits are required")
-  core.debug("Splits: " + splitList);
-
-  const splits = JSON.parse(splitList)*/
   const splits = core.getMultilineInput('splits')
   core.debug("Splits: " + splits);
 
