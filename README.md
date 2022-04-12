@@ -10,8 +10,14 @@ GIthub action to evaluate Splits
 **Required** the account/user key
 
 ### splits
-**Required** the Splits to be evaluated. Must be a JSON representation due to Github actions inputs limitations
-For instance: `["split_a","split_b"]`
+**Required** the Splits to be evaluated. Should be a multiline string due to Github actions inputs limitations
+For instance: 
+```yaml
+with:
+    splits: |
+        split_a
+        split_b
+```
 
 ## Outputs
 
