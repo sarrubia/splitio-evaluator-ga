@@ -9,7 +9,6 @@ const checkInputParam = function (param, errMsg) {
 };
 
 try {
-  // `who-to-greet` input defined in action metadata file
   const apiKey = core.getInput('api-key');
   checkInputParam(apiKey, 'API Key is required');
   core.debug('api-key: ' + apiKey.substring(0, 5) + '...');
@@ -42,7 +41,7 @@ try {
     // Set the step output
     core.setOutput('result', JSON.stringify(result));
 
-    client.destroy();
+    client.destroy(); // flush the impressions
     client = null;
   });
 } catch (error) {
