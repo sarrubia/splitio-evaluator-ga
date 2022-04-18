@@ -79,3 +79,39 @@ Also if there was some error on evaluation the Split SDK will return the `contro
   if: ${{ env.split_b == 'control' }}
   run: echo "Run something when split evaluation was wrong"
 ```
+
+## Sharing output among jobs
+
+Sometimes it is useful having access to the evaluation results from a diferent job. To achieve this the job must to set up its `output` and the Github actions jobs dependency key-word `needs` is required in order to reference the output's evaluation job. The next is an example of this.
+
+```yaml
+on: [push]
+
+jobs:
+    split_evaluator:
+        runs-on: ubuntu-latest
+        name: A job to run the Split evaluator github action
+        steps:
+        - name: Evaluate action step
+            id: evaluator
+            uses: sarrubia/split-evaluator-github-action@v1.0
+            with:
+            api-key: ${{ secrets.SPLIT_API_KEY }}
+            key: ${{ secrets.SPLIT_EVAL_KEY }}
+            splits: |
+                enable_paywall
+                api_verbose
+        # The job outputs must be sets in order to share the evaluation results
+        outputs:
+            treatments: ${{ steps.evaluator.outputs.result }}
+
+    another_job:
+        # Job dependency. Means that before this one, the split_evaluator job
+        # will be executed and set up the evaluated output
+        needs: split_evaluator
+        runs-on: ubuntu-latest
+        steps:
+            - name: Run when paywall is enabled
+              if: ${{ fromJson(needs.split_evaluator.outputs.treatments).enable_paywall == 'on' }}
+              run: echo 'Paywall has been enabled'
+```
