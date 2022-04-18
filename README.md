@@ -115,3 +115,9 @@ jobs:
               if: ${{ fromJson(needs.split_evaluator.outputs.treatments).enable_paywall == 'on' }}
               run: echo 'Paywall has been enabled'
 ```
+
+Note that to access the exported results the function `fromJson` is required in order to access the output values as an object.
+
+```
+fromJson(needs.split_evaluator.outputs.treatments).enable_paywall
+```
