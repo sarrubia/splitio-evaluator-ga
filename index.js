@@ -39,7 +39,8 @@ try {
     }
 
     // Set the step output
-    core.setOutput('result', JSON.stringify(result));
+    //core.setOutput('result', JSON.stringify(result));
+    core.setOutput('result', result);
 
     await client.destroy(); // flush the impressions
     client = null;
