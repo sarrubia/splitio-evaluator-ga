@@ -27,7 +27,7 @@ try {
   });
   var client = factory.client();
 
-  client.on(client.Event.SDK_READY, function () {
+  client.on(client.Event.SDK_READY, async function () {
     var result = client.getTreatments(key, splits);
 
     for (const splitName in result) {
@@ -41,7 +41,7 @@ try {
     // Set the step output
     core.setOutput('result', JSON.stringify(result));
 
-    client.destroy(); // flush the impressions
+    await client.destroy(); // flush the impressions
     client = null;
   });
 } catch (error) {
