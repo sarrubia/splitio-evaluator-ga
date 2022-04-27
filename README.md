@@ -124,7 +124,7 @@ fromJson(needs.split_evaluator.outputs.treatments).enable_paywall
 
 ### Controlling jobs
 
-Having the job dependency and readding the ooutput a Github action's job can be enabled or not which gave us the capability to control workflows.
+Having the job dependency and fetching the output a Github action's job can be enabled or not which gave us the capability to control workflows.
 
 ```yaml
 on: [push]
