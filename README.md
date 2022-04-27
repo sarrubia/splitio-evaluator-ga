@@ -80,7 +80,7 @@ Also if there was some error on evaluation the Split SDK will return the `contro
   run: echo "Run something when split evaluation was wrong"
 ```
 
-## Sharing output among jobs
+## Sharing output between jobs
 
 Sometimes it is useful having access to the evaluation results from a diferent job. To achieve this the job must to set up its `output` and the Github actions jobs dependency key-word `needs` is required in order to reference the output's evaluation job. The next is an example of this.
 
@@ -120,4 +120,59 @@ Note that to access the exported results the function `fromJson` is required in 
 
 ```
 fromJson(needs.split_evaluator.outputs.treatments).enable_paywall
+```
+
+### Controlling jobs
+
+Having the job dependency and readding the ooutput a Github action's job can be enabled or not which gave us the capability to control workflows.
+
+```yaml
+on: [push]
+
+jobs:
+    split_evaluator:
+        runs-on: ubuntu-latest
+        name: A job to run the Split evaluator github action
+        steps:
+        - name: Evaluate action step
+            id: evaluator
+            uses: sarrubia/split-evaluator-github-action@v1.0
+            with:
+            api-key: ${{ secrets.SPLIT_API_KEY }}
+            key: ${{ secrets.SPLIT_EVAL_KEY }}
+            splits: |
+                canary_deploy
+                integration_tests_v2
+        # The job outputs must be sets in order to share the evaluation results
+        outputs:
+            treatments: ${{ steps.evaluator.outputs.result }}
+
+    testing:
+        needs: split_evaluator
+        runs-on: ubuntu-latest
+        steps:
+            - name: Unit tests
+              run: echo 'running unit tests...'
+
+            - name: Integration tests
+              run: echo 'running integration tests...'
+
+            - name: Integration tests v2
+              if: ${{ fromJson(needs.split_evaluator.outputs.treatments).integration_tests_v2 == 'on' }}
+              run: echo 'running integration tests v2...'
+
+    deploy_canary:
+        needs: [split_evaluator, testing]
+        if: ${{ fromJson(needs.split_evaluator.outputs.treatments).canary_deploy == 'on' }}
+        runs-on: ubuntu-latest
+        steps:
+            - name: Deploy to CANARY env
+              run: echo 'deploying to CANARY...'
+
+    deploy_prod:
+        needs: [split_evaluator, testing]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Deploy to PROD env
+              run: echo 'deploying to PROD...'
 ```

@@ -1,5 +1,5 @@
 name: 'Split Evaluator'
-author: 'Sebastian Arrubia (sarrubia)'
+author: 'Sebastian Arrubia (github.com/sarrubia)'
 description: 'Evaluates Splits and set evaluations as output'
 inputs:
   api-key:  # Split api key
