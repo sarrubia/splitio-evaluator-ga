@@ -45,7 +45,7 @@ jobs:
     steps:
       - name: Evaluate action step
         id: evaluator
-        uses: sarrubia/split-evaluator-github-action@v0.7
+        uses: sarrubia/splitio-evaluator-ga@v1.0
         with:
           api-key: ${{ secrets.SPLIT_API_KEY }}
           key: ${{ secrets.SPLIT_EVAL_KEY }}
@@ -94,7 +94,7 @@ jobs:
         steps:
         - name: Evaluate action step
             id: evaluator
-            uses: sarrubia/split-evaluator-github-action@v1.0
+            uses: sarrubia/splitio-evaluator-ga@v1.0
             with:
             api-key: ${{ secrets.SPLIT_API_KEY }}
             key: ${{ secrets.SPLIT_EVAL_KEY }}
@@ -136,7 +136,7 @@ jobs:
         steps:
         - name: Evaluate action step
             id: evaluator
-            uses: sarrubia/split-evaluator-github-action@v1.0
+            uses: sarrubia/splitio-evaluator-ga@v1.0
             with:
             api-key: ${{ secrets.SPLIT_API_KEY }}
             key: ${{ secrets.SPLIT_EVAL_KEY }}
