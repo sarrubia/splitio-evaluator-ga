@@ -1,6 +1,7 @@
 # Split evaluator github action
 
-GIthub action to evaluate Splits
+This github action let you control your workflows and steps using the [Split Software](https://www.split.io) Feature Flags SDK.
+Only a [Split Software free account](https://www.split.io/signup/) is needed to use this Github Action to control your CI/CD pipelines!
 
 ## Inputs
 
