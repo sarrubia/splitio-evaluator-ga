@@ -1,6 +1,6 @@
-name: 'Split Evaluator'
+name: 'Split Software Evaluator'
 author: 'Sebastian Arrubia (github.com/sarrubia)'
-description: 'Evaluates Splits and set evaluations as output'
+description: 'Evaluates your Split Feature Flags and set the evaluation treatments as output'
 inputs:
   api-key:  # Split api key
     description: 'Split API key'
