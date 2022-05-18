@@ -38,7 +38,7 @@ with:
 
 In this mode, the SDK loads a mapping of split name to treatment from a file at `.github/splitio/.split`. For a given split, the treatment specified in the file is returned for every customer.
 
-**Important:** in order to get access to read the `.split` file from your repo, you must to run the `checkout` action before to run the Split evaluation.
+**Important:** in order to get access to read the `.split` file from your repo, you must to run the `checkout` action before the Split evaluation.
 
 ```yaml
 - name: Checkout code
