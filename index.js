@@ -20,11 +20,22 @@ try {
   const splits = core.getMultilineInput('splits');
   core.debug('Splits: ' + splits);
 
-  var factory = SplitFactory({
-    core: {
-      authorizationKey: apiKey,
-    },
-  });
+  var factory;
+  if (apiKey == 'localhost') {
+    factory = SplitFactory({
+      core: {
+        authorizationKey: apiKey,
+      },
+      features: '.github/splitio/.split',
+    });
+  } else {
+    factory = SplitFactory({
+      core: {
+        authorizationKey: apiKey,
+      },
+    });
+  }
+
   var client = factory.client();
 
   client.on(client.Event.SDK_READY, async function () {
