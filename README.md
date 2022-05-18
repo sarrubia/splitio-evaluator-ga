@@ -25,6 +25,48 @@ with:
     split_b
 ```
 
+### Localhost mode
+
+Because features start their life on one developer's machine. A developer should be able to put code behind splits on their development machine without the SDK requiring network connectivity. To achieve this, the Split SDK can be started in localhost mode (aka off-the-grid mode). In this mode, the SDK neither polls nor updates Split servers. Instead, it uses an in-memory data structure to determine what treatments to show to the logged in customer for each of the features.
+
+To use the SDK in localhost mode, replace the API Key with "localhost", as shown in the example below:
+
+```yaml
+with:
+  api-key: 'localhost'
+```
+
+In this mode, the SDK loads a mapping of split name to treatment from a file at `.github/splitio/.split`. For a given split, the treatment specified in the file is returned for every customer.
+
+**Important:** in order to get access to read the `.split` file from your repo, you must to run the `checkout` action before to run the Split evaluation.
+
+```yaml
+- name: Checkout code
+  uses: actions/checkout@v2
+
+- name: Evaluate action step
+  id: evaluator
+  uses: sarrubia/splitio-evaluator-ga@v1.1
+  with:
+    api-key: 'localhost'
+    key: ${{ secrets.SPLIT_EVAL_KEY }}
+    splits: |
+      split_a
+      split_b
+```
+
+Here is a sample `.split` file. The format of this file is two columns separated by a whitespace. The left column is the split name, and the right column is the treatment name.
+
+```text
+# this is a comment
+
+reporting_v2 on # sdk.getTreatment(*, reporting_v2) will return 'on'
+
+double_writes_to_cassandra off
+
+new-navigation v3
+```
+
 ## Outputs
 
 ### `result`
