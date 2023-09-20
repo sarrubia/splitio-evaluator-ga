@@ -15,19 +15,19 @@ Only a [Split Software free account](https://www.split.io/signup/) is needed to 
 
 ### splits
 
-**Required** the Splits to be evaluated. Should be a multiline string due to Github actions inputs limitations
+**Required** the splits (feature flags) to be evaluated. Should be a multiline string due to Github actions inputs limitations
 For instance:
 
 ```yaml
 with:
   splits: |
-    split_a
-    split_b
+    feature_flag_a
+    feature_flag_b
 ```
 
 ### Localhost mode
 
-Because features start their life on one developer's machine. A developer should be able to put code behind splits on their development machine without the SDK requiring network connectivity. To achieve this, the Split SDK can be started in localhost mode (aka off-the-grid mode). In this mode, the SDK neither polls nor updates Split servers. Instead, it uses an in-memory data structure to determine what treatments to show to the logged in customer for each of the features.
+Because features start their life on one developer's machine. A developer should be able to put code behind feature_flags on their development machine without the SDK requiring network connectivity. To achieve this, the Split SDK can be started in localhost mode (aka off-the-grid mode). In this mode, the SDK neither polls nor updates Split servers. Instead, it uses an in-memory data structure to determine what treatments to show to the logged in customer for each of the features.
 
 To use the SDK in localhost mode, replace the API Key with "localhost", as shown in the example below:
 
@@ -36,7 +36,7 @@ with:
   api-key: 'localhost'
 ```
 
-In this mode, the SDK loads a mapping of split name to treatment from a file at `.github/splitio/.split`. For a given split, the treatment specified in the file is returned for every customer.
+In this mode, the SDK loads a mapping of split name to treatment from a file at `.github/splitio/.split`. For a given feature_flag, the treatment specified in the file is returned for every customer.
 
 **Important:** in order to get access to read the `.split` file from your repo, you must to run the `checkout` action before the Split evaluation.
 
@@ -51,11 +51,11 @@ In this mode, the SDK loads a mapping of split name to treatment from a file at 
     api-key: 'localhost'
     key: ${{ secrets.SPLIT_EVAL_KEY }}
     splits: |
-      split_a
-      split_b
+      feature_flag_a
+      feature_flag_b
 ```
 
-Here is a sample `.split` file. The format of this file is two columns separated by a whitespace. The left column is the split name, and the right column is the treatment name.
+Here is a sample `.split` file. The format of this file is two columns separated by a whitespace. The left column is the feature_flag name, and the right column is the treatment name.
 
 ```text
 # this is a comment
@@ -71,11 +71,11 @@ new-navigation v3
 
 ### `result`
 
-This is a JSON string representation with all evaluated results, for instance: `{"split_a":"on","split_b":"off"}`
+This is a JSON string representation with all evaluated results, for instance: `{"feature_flag_a":"on","feature_flag_b":"off"}`
 
 ## Env vars
 
-After runing the action you will have available in the future steps environment blocks an env var named with the value of the input parameter Splits and the treatment result as its value.
+After runing the action you will have available in the future steps environment blocks an env var named with the value of the input parameter feature_flags and the treatment result as its value.
 For instance, given the input:
 
 ```yaml
@@ -93,17 +93,17 @@ jobs:
           api-key: ${{ secrets.SPLIT_API_KEY }}
           key: ${{ secrets.SPLIT_EVAL_KEY }}
           splits: |
-            split_a
-            split_b
+            feature_flag_a
+            feature_flag_b
 ```
 
-The next env vars `env.split_a` and `env.split_b` will be available on future steps like:
+The next env vars `env.feature_flag_a` and `env.feature_flag_b` will be available on future steps like:
 
 Running the step when the evaluation returned `on`
 
 ```yaml
 - name: Run only when treatment ON
-  if: ${{ env.split_a == 'on' }}
+  if: ${{ env.feature_flag_a == 'on' }}
   run: echo "Do something great here"
 ```
 
@@ -111,16 +111,16 @@ Running the step when the evaluation returned `off`
 
 ```yaml
 - name: Run only when treatment OFF
-  if: ${{ env.split_b == 'off' }}
-  run: echo "Run something when split is Off"
+  if: ${{ env.feature_flag_b == 'off' }}
+  run: echo "Run something when feature_flag is Off"
 ```
 
 Also if there was some error on evaluation the Split SDK will return the `control` treatment
 
 ```yaml
 - name: Run only when treatment control
-  if: ${{ env.split_b == 'control' }}
-  run: echo "Run something when split evaluation was wrong"
+  if: ${{ env.feature_flag_b == 'control' }}
+  run: echo "Run something when feature_flag evaluation was wrong"
 ```
 
 ## Sharing output between jobs
