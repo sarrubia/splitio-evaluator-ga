@@ -18,9 +18,9 @@
   },
   "homepage": "https://github.com/splitio/split-evaluator-action#readme",
   "dependencies": {
-    "@actions/core": "^1.6.0",
-    "@actions/github": "^5.0.1",
-    "@splitsoftware/splitio": "^10.18.0"
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0",
+    "@splitsoftware/splitio": "^10.24.1"
   },
   "devDependencies": {
     "eslint": "^8.13.0"
