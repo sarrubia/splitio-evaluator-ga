@@ -1,25 +1,25 @@
-name: 'Split Software Evaluator'
-author: 'Sebastian Arrubia (github.com/sarrubia)'
-description: 'Evaluates your Split Feature Flags and set the evaluation treatments as output'
+name: "Split Software Evaluator"
+author: "Sebastian Arrubia (github.com/splitio)"
+description: "Evaluates your Split Feature Flags and set the evaluation treatments as output"
 inputs:
-  api-key:  # Split api key
-    description: 'Split API key'
+  api-key: # Split api key
+    description: "Split API key"
     required: true
-    default: ''
-  key:  # user/evaluation key
-    description: 'Evaluation key'
+    default: ""
+  key: # user/evaluation key
+    description: "Evaluation key"
     required: true
-    default: ''
+    default: ""
   splits:
-    description: 'Splits to be evaluated'
+    description: "Splits to be evaluated"
     required: true
-    default: ''
+    default: ""
 outputs:
-  result: 
-    description: 'Evaluation results represented as JSON'
+  result:
+    description: "Evaluation results represented as JSON"
 runs:
-  using: 'node12'
-  main: 'index.js'
+  using: "node12"
+  main: "index.js"
 branding:
-  icon: 'git-merge'  
-  color: 'blue'
+  icon: "git-merge"
+  color: "blue"
