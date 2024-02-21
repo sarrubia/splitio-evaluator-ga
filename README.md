@@ -46,7 +46,7 @@ In this mode, the SDK loads a mapping of split name to treatment from a file at 
 
 - name: Evaluate action step
   id: evaluator
-  uses: sarrubia/splitio-evaluator-ga@v1.1
+  uses: splitio/split-evaluator-action@v1.0
   with:
     api-key: 'localhost'
     key: ${{ secrets.SPLIT_EVAL_KEY }}
@@ -88,7 +88,7 @@ jobs:
     steps:
       - name: Evaluate action step
         id: evaluator
-        uses: sarrubia/splitio-evaluator-ga@v1.0
+        uses: splitio/split-evaluator-action@v1.0
         with:
           api-key: ${{ secrets.SPLIT_API_KEY }}
           key: ${{ secrets.SPLIT_EVAL_KEY }}
@@ -137,7 +137,7 @@ jobs:
         steps:
         - name: Evaluate action step
             id: evaluator
-            uses: sarrubia/splitio-evaluator-ga@v1.0
+            uses: splitio/split-evaluator-action@v1.0
             with:
             api-key: ${{ secrets.SPLIT_API_KEY }}
             key: ${{ secrets.SPLIT_EVAL_KEY }}
@@ -179,7 +179,7 @@ jobs:
         steps:
         - name: Evaluate action step
             id: evaluator
-            uses: sarrubia/splitio-evaluator-ga@v1.0
+            uses: splitio/split-evaluator-action@v1.0
             with:
             api-key: ${{ secrets.SPLIT_API_KEY }}
             key: ${{ secrets.SPLIT_EVAL_KEY }}
