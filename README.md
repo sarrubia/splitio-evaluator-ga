@@ -20,7 +20,7 @@ For instance:
 
 ```yaml
 with:
-  splits: |
+  feature-flags: |
     feature_flag_a
     feature_flag_b
 ```
@@ -50,7 +50,7 @@ In this mode, the SDK loads a mapping of split name to treatment from a file at 
   with:
     api-key: 'localhost'
     key: ${{ secrets.SPLIT_EVAL_KEY }}
-    splits: |
+    feature-flags: |
       feature_flag_a
       feature_flag_b
 ```
@@ -92,7 +92,7 @@ jobs:
         with:
           api-key: ${{ secrets.SPLIT_API_KEY }}
           key: ${{ secrets.SPLIT_EVAL_KEY }}
-          splits: |
+          feature-flags: |
             feature_flag_a
             feature_flag_b
 ```
@@ -141,7 +141,7 @@ jobs:
             with:
             api-key: ${{ secrets.SPLIT_API_KEY }}
             key: ${{ secrets.SPLIT_EVAL_KEY }}
-            splits: |
+            feature-flags: |
                 enable_paywall
                 api_verbose
         # The job outputs must be sets in order to share the evaluation results
@@ -183,7 +183,7 @@ jobs:
             with:
             api-key: ${{ secrets.SPLIT_API_KEY }}
             key: ${{ secrets.SPLIT_EVAL_KEY }}
-            splits: |
+            feature-flags: |
                 canary_deploy
                 integration_tests_v2
         # The job outputs must be sets in order to share the evaluation results

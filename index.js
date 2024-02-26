@@ -17,8 +17,8 @@ try {
   checkInputParam(key, 'User/Evaluation key is required');
   core.debug('key: ' + key);
 
-  const splits = core.getMultilineInput('splits');
-  core.debug('Splits: ' + splits);
+  const splits = core.getMultilineInput('feature-flags');
+  core.debug('Feature Flags: ' + splits);
 
   var factory;
   if (apiKey == 'localhost') {
