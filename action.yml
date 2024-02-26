@@ -10,8 +10,8 @@ inputs:
     description: "Evaluation key"
     required: true
     default: ""
-  splits:
-    description: "Splits to be evaluated"
+  feature-flags:
+    description: "Feature flags to be evaluated"
     required: true
     default: ""
 outputs:
