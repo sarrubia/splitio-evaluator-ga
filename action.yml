@@ -1,4 +1,4 @@
-name: "Split Software Evaluator"
+name: "Split Software: Feature Flags Evaluator"
 author: "Sebastian Arrubia (github.com/splitio)"
 description: "Evaluates your Split Feature Flags and set the evaluation treatments as output"
 inputs:
