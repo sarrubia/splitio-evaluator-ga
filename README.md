@@ -218,7 +218,7 @@ You need to create the `.split` file and its contents in your repository's `.git
 ```bash
 # this is a comment
 
-reporting_v2 on # sdk.getTreatment(*, reporting_v2) will return 'on'
+reporting_v2 on # env.reporting_v2 will evaluate to 'on'
 
 double_writes_to_cassandra off
 
