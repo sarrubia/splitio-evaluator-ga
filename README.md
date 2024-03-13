@@ -1,22 +1,34 @@
-# Split evaluator github action
+# Split Feature Flags Evaluator
 
-This github action let you control your workflows and steps using the [Split Software](https://www.split.io) Feature Flags SDK.
-Only a [Split Software free account](https://www.split.io/signup/) is needed to use this Github Action to control your CI/CD pipelines!
+This GitHub Action lets you control your GitHub Workflow steps using [Split](https://www.split.io) feature flags. A [free Split account](https://www.split.io/signup/) is all that is needed to use this GitHub Action to control your CI/CD pipelines.
 
-## Inputs
+## Input parameters
 
-### api-key
+The input parameters of this GitHub Action:
 
-**Required** your [Split account API key](https://help.split.io/hc/en-us/articles/360019916211)
+### `api-key` (required)
 
-### key
+Your server-side [Split SDK API key](https://help.split.io/hc/en-us/articles/360019916211-API-keys).
 
-**Required** the account/user key
+### `key` (required)
 
-### splits
+The account/user key. For each feature flag, Split will associate this user key with a feature flag evaluation. This association will not change once assigned (unless the feature flag targeting rule is changed).
 
-**Required** the splits (feature flags) to be evaluated. Should be a multiline string due to Github actions inputs limitations
-For instance:
+_**Tips:**_
+
+* _**For randomized continuous integration testing:**_
+
+  To achieve variable feature flag results, you can use randomly-generated user keys. This allows you to randomize continuous integration testing, and control your allocation percentages using your feature flag definitions in the [Split UI](https://www.split.io).
+
+* _**For controlled CI workflow execution paths:**_
+
+  To split your execution path in your CI workflow in a controlled (and repeatable) way, you can consistently use the same user keys, and then specify your user keys in the feature flag's attribute-based targeting rules, by using the `Is in list` condition. This allows you to control your CI workflow using feature flags in the [Split UI](https://www.split.io).
+
+### `feature-flags` (required)
+
+The names of the feature flags to be evaluated. These are the names you defined when [creating the feature flags](https://help.split.io/hc/en-us/articles/9058495582349-Create-a-feature-flag).
+
+This is a multiline parameter. For example:
 
 ```yaml
 with:
@@ -25,58 +37,22 @@ with:
     feature_flag_b
 ```
 
-### Localhost mode
+## Output
 
-Because features start their life on one developer's machine. A developer should be able to put code behind feature_flags on their development machine without the SDK requiring network connectivity. To achieve this, the Split SDK can be started in localhost mode (aka off-the-grid mode). In this mode, the SDK neither polls nor updates Split servers. Instead, it uses an in-memory data structure to determine what treatments to show to the logged in customer for each of the features.
-
-To use the SDK in localhost mode, replace the API Key with "localhost", as shown in the example below:
-
-```yaml
-with:
-  api-key: 'localhost'
-```
-
-In this mode, the SDK loads a mapping of split name to treatment from a file at `.github/splitio/.split`. For a given feature_flag, the treatment specified in the file is returned for every customer.
-
-**Important:** in order to get access to read the `.split` file from your repo, you must to run the `checkout` action before the Split evaluation.
-
-```yaml
-- name: Checkout code
-  uses: actions/checkout@v2
-
-- name: Evaluate action step
-  id: evaluator
-  uses: splitio/split-evaluator-action@v1.0
-  with:
-    api-key: 'localhost'
-    key: ${{ secrets.SPLIT_EVAL_KEY }}
-    feature-flags: |
-      feature_flag_a
-      feature_flag_b
-```
-
-Here is a sample `.split` file. The format of this file is two columns separated by a whitespace. The left column is the feature_flag name, and the right column is the treatment name.
-
-```text
-# this is a comment
-
-reporting_v2 on # sdk.getTreatment(*, reporting_v2) will return 'on'
-
-double_writes_to_cassandra off
-
-new-navigation v3
-```
-
-## Outputs
+Executing this GitHub Action produces the following output:
 
 ### `result`
 
-This is a JSON string representation with all evaluated results, for instance: `{"feature_flag_a":"on","feature_flag_b":"off"}`
+A JSON string representation with all evaluated results for the specified user key. For example: 
+```
+{"feature_flag_a":"on","feature_flag_b":"off"}
+```
 
-## Env vars
+### `env` variables
 
-After runing the action you will have available in the future steps environment blocks an env var named with the value of the input parameter feature_flags and the treatment result as its value.
-For instance, given the input:
+An `env` variable will be set for each feature flag. The variable identifier is the given feature flag name and the value is the evaluated treatment result. For example:
+
+Given the input
 
 ```yaml
 on: [push]
@@ -84,11 +60,11 @@ on: [push]
 jobs:
   split_evaluator_test:
     runs-on: ubuntu-latest
-    name: A job to test the Split evaluator github action
+    name: A job to test the Split Feature Flag Evaluator github action
     steps:
       - name: Evaluate action step
         id: evaluator
-        uses: splitio/split-evaluator-action@v1.0
+        uses: splitio/split-evaluator-action@v1.1
         with:
           api-key: ${{ secrets.SPLIT_API_KEY }}
           key: ${{ secrets.SPLIT_EVAL_KEY }}
@@ -97,9 +73,9 @@ jobs:
             feature_flag_b
 ```
 
-The next env vars `env.feature_flag_a` and `env.feature_flag_b` will be available on future steps like:
+The `env.feature_flag_a` and `env.feature_flag_b` variables will be instantiated. These variables can be used in subsequent workflow steps. For example:
 
-Running the step when the evaluation returned `on`
+Running a workflow step when the evaluation returned `on`
 
 ```yaml
 - name: Run only when treatment ON
@@ -107,25 +83,27 @@ Running the step when the evaluation returned `on`
   run: echo "Do something great here"
 ```
 
-Running the step when the evaluation returned `off`
+Running a workflow step when the evaluation returned `off`
 
 ```yaml
 - name: Run only when treatment OFF
   if: ${{ env.feature_flag_b == 'off' }}
-  run: echo "Run something when feature_flag is Off"
+  run: echo "Run something when feature_flag_b is off"
 ```
 
-Also if there was some error on evaluation the Split SDK will return the `control` treatment
+Running a workflow step when there was an error in evaluating a feature flag and the evaluation returned `control`
 
 ```yaml
 - name: Run only when treatment control
   if: ${{ env.feature_flag_b == 'control' }}
-  run: echo "Run something when feature_flag evaluation was wrong"
+  run: echo "Run something when feature_flag_b was not evaluated successfully"
 ```
 
 ## Sharing output between jobs
 
-Sometimes it is useful having access to the evaluation results from a diferent job. To achieve this the job must to set up its `output` and the Github actions jobs dependency key-word `needs` is required in order to reference the output's evaluation job. The next is an example of this.
+You may find it useful to have access to the feature flag evaluation results in a different job. To achieve this, the job must set its `outputs` and the GitHub Actions jobs dependency keyword `needs` is required in a subsequent job that will reference the outputs.
+
+For example:
 
 ```yaml
 on: [push]
@@ -133,7 +111,7 @@ on: [push]
 jobs:
     split_evaluator:
         runs-on: ubuntu-latest
-        name: A job to run the Split evaluator github action
+        name: A job to run the Split Feature Flags Evaluator github action
         steps:
         - name: Evaluate action step
             id: evaluator
@@ -144,13 +122,13 @@ jobs:
             feature-flags: |
                 enable_paywall
                 api_verbose
-        # The job outputs must be sets in order to share the evaluation results
+        # The job outputs must be set in order to share the evaluation results
         outputs:
             treatments: ${{ steps.evaluator.outputs.result }}
 
     another_job:
-        # Job dependency. Means that before this one, the split_evaluator job
-        # will be executed and set up the evaluated output
+        # Set the job dependency, to ensure that the split_evaluator job
+        # is executed and sets its outputs values before another_job starts.
         needs: split_evaluator
         runs-on: ubuntu-latest
         steps:
@@ -159,15 +137,17 @@ jobs:
               run: echo 'Paywall has been enabled'
 ```
 
-Note that to access the exported results the function `fromJson` is required in order to access the output values as an object.
+Note that the `fromJson` function is required to access the output values as an object:
 
-```
+```console
 fromJson(needs.split_evaluator.outputs.treatments).enable_paywall
 ```
 
-### Controlling jobs
+## Controlling jobs
 
-Having the job dependency and fetching the output a Github action's job can be enabled or not which gave us the capability to control workflows.
+You can control your workflow by setting job outputs and dependencies and then enabling or disabling a dependent job based on the Split Feature Flags Evaluator action's outputs.
+
+For example:
 
 ```yaml
 on: [push]
@@ -175,7 +155,7 @@ on: [push]
 jobs:
     split_evaluator:
         runs-on: ubuntu-latest
-        name: A job to run the Split evaluator github action
+        name: A job to run the Split Feature Flags Evaluator github action
         steps:
         - name: Evaluate action step
             id: evaluator
@@ -186,7 +166,7 @@ jobs:
             feature-flags: |
                 canary_deploy
                 integration_tests_v2
-        # The job outputs must be sets in order to share the evaluation results
+        # Set the job outputs to share the feature flag evaluation results with other jobs
         outputs:
             treatments: ${{ steps.evaluator.outputs.result }}
 
@@ -219,3 +199,49 @@ jobs:
             - name: Deploy to PROD env
               run: echo 'deploying to PROD...'
 ```
+
+## Localhost mode
+
+You can choose to evaluate feature flags from a file rather than from Split servers. To achieve this, the Split Feature Flags Evaluator action can be executed in localhost mode (a.k.a. off-the-grid mode). In this mode, the Split Feature Flags Evaluator neither polls nor updates Split servers. The feature flag evaluations are instead read from a local file.
+
+To use the Split Evaluator action in localhost mode, replace the API Key with "localhost", as shown below:
+
+```yaml
+with:
+  api-key: 'localhost'
+```
+
+In localhost mode, the Split Feature Flags Evaluator action loads a mapping of feature flag names to treatments (evaluation results) from the `.github/splitio/.split` file, without regard to the [`key`](#key-required) input parameter.
+
+You need to create the `.split` file and its contents in your repository's `.github/splitio/` folder. The format of this file is two columns separated by a whitespace. The left column is the feature flag name, and the right column is the treatment value. For example:
+
+```bash
+# this is a comment
+
+reporting_v2 on # env.reporting_v2 will evaluate to 'on'
+
+double_writes_to_cassandra off
+
+new-navigation v3
+```
+
+_**Important:**_ To access the `.split` file, you must run the `checkout` action (which checks out all your repo files including the `.github/splitio/.split` file) before the Split Feature Flags Evaluator action. The workflow script syntax for this is shown below:
+
+```yaml
+- name: Checkout code
+  uses: actions/checkout@v2
+
+- name: Evaluate action step
+  id: evaluator
+  uses: splitio/split-evaluator-action@v1.0
+  with:
+    api-key: 'localhost'
+    key: ${{ secrets.SPLIT_EVAL_KEY }}
+    feature-flags: |
+      feature_flag_a
+      feature_flag_b
+```
+
+## About
+
+The Split Feature Flags Evaluator GitHub Action is built using the [Split SDK for JavaScript](https://www.npmjs.com/package/@splitsoftware/splitio).
